@@ -1,0 +1,268 @@
+#' Read data file as matrix
+#'
+#' @param file Path to input data file
+#' @param skip_row_check (default `FALSE`) Flag to skip the removal
+#' of empty rows
+#'
+#' @return Matrix object containing data from file
+#'
+#' @description Reads a tabular data file and returns a matrix object.
+#' Automatically detects separator and allows duplicate row names.
+#'
+#' @details This function reads a tabular text file, automatically detecting the
+#' separator (tab, comma, semicolon). It returns a matrix containing the data values,
+#' using the first column as rownames (allowing duplicates). Blank rows and rows with
+#' NA as rowname are skipped.
+#'
+#' @examples
+#' \dontrun{
+#' mymatrix <- read.as_matrix(mydata.csv)
+#' }
+#' @export
+read.as_matrix <- function(file, skip_row_check = FALSE, as.char = TRUE,
+                           as.matrix = TRUE, row.names = 1) {
+  ## determine if there are empty lines in header
+  x0 <- data.table::fread(
+    file = file,
+    header = FALSE,
+    nrow = 100
+  )
+  x0[is.na(x0)] <- ""
+  skip.rows <- min(which(cumsum(rowMeans(x0 != "")) > 0)) - 1
+  skip.colsN <- min(which(cumsum(rev(colMeans(x0 != ""))) > 0)) - 1
+  keep.cols <- seq_len(ncol(x0) - skip.colsN)
+
+  ## try to detect decimal separator
+  sep <- detect_delim(file)
+  dec <- detect_decimal(file)
+  if (dec == "," && sep == ",") dec <- "." ## exception
+
+  ## read delimited table automatically determine separator. allow
+  ## duplicated rownames. This implements with faster fread.
+  x0 <- data.table::fread(
+    file = file,
+    check.names = FALSE,
+    header = TRUE,
+    dec = dec,
+    # fill = TRUE, ## fill=TRUE will fail for some datasets
+    skip = skip.rows,
+    select = keep.cols,
+    blank.lines.skip = TRUE,
+    stringsAsFactors = FALSE,
+    integer64 = "numeric"
+  )
+  # Handle weird case where file contains quotes on each row
+  # e.g. "field1 field2"
+  #      "val1   val2"
+  # where columns are read ok by fread
+  # but first and last column maintain the "
+  first_column <- x0[[1]] # Extract the first column
+  last_column <- x0[[ncol(x0)]] # Extract the last column
+  first_column <- iconv2utf8(first_column)
+  last_column <- iconv2utf8(last_column)
+  if (all(grepl('^"', first_column)) && all(grepl('"$', last_column))) {
+    x0[[1]] <- gsub('^"', "", first_column)
+    x0[[ncol(x0)]] <- as.numeric(gsub('"$', "", last_column))
+  }
+
+  ## see: https://github.com/Rdatatable/data.table/issues/2607
+  coln.int64 <- names(which(sapply(x0, bit64::is.integer64)))
+  if (length(coln.int64) > 0L) {
+    x0[, c(coln.int64) := lapply(.SD, as.numeric), .SDcols = coln.int64]
+  }
+
+  ## For csv with missing rownames field at (1,1) in the header,
+  ## fill=TRUE will fail. Check header with slow read.csv() and
+  ## correct if needed. fread is fast but is not so robust...
+  ## detect delimiter/seperator
+  hdr <- utils::read.csv(
+    file = file, sep = sep, check.names = FALSE, na.strings = NULL,
+    header = TRUE, nrows = 1, skip = skip.rows, row.names = NULL
+  )
+  if (ncol(hdr) > 1) { # In some rare cases, hdr can be read as a single column (wrong), skip correction when that happens
+    hdr <- hdr[, keep.cols]
+    if (NCOL(x0) > 0 && !all(colnames(x0) == colnames(hdr))) {
+      message("[read.as_matrix] correcting header")
+      colnames(x0) <- colnames(hdr)
+    }
+  }
+
+  ## give first column name
+  if (colnames(x0)[1] == "") colnames(x0)[1] <- "row.names"
+
+  ## drop rows without rownames
+  sel <- which(!as.character(x0[[1]]) %in% c("", " ", "NA", "na", "-", NA))
+  if (length(sel) == 0) {
+    return(NULL)
+  }
+  x <- x0[sel, , drop = FALSE]
+
+  # Convert x from data.table to matrix. With as.char = TRUE,
+  # as.matrix() does not return mixed types (such as in dataframes).
+  if (as.char) {
+    ## drop duplicated columns
+    ## otherwise as.char will crash
+    x <- x[, which(duplicated(colnames(x))) := NULL]
+    colnames_x <- colnames(x)[-1]
+    x[, c(colnames_x) := lapply(.SD, as.character), .SDcols = colnames_x]
+  }
+
+  ## for character matrix, we strip whitespace
+  which.char <- which(sapply(x, class) == "character")
+  if (length(which.char)) {
+    char.cols <- colnames(x)[which.char]
+    x[, c(char.cols) := lapply(.SD, iconv2utf8), .SDcols = char.cols]
+    x[, c(char.cols) := lapply(.SD, trimws), .SDcols = char.cols]
+  }
+
+  ## set rownames, convert to matrix.
+  if (as.matrix) {
+    ## this allow duplicated rownames
+    x <- as.matrix(x, rownames = row.names) ## this can be slow!!
+  } else {
+    if (!is.null(row.names)) {
+      rownamesx <- x[[1]]
+      data.table::set(x, j = as.integer(row.names), value = NULL)
+      ## duplicated rownames not allowed!
+      if (sum(duplicated(rownamesx)) > 0) {
+        message("warning: duplicated rownames will be made unique")
+      }
+      rownames(x) <- make_unique(rownamesx)
+    }
+  }
+
+  ## some csv have trailing empty rows/cols at end of table
+  last.row.empty <- mean(is.na(x[nrow(x), ])) == 1
+  last.col.empty <- mean(is.na(x[, ncol(x)])) == 1
+
+  if (last.row.empty && !skip_row_check) { # bypass in case full NA rows
+    empty.row <- (rowSums(is.na(x) | x %in% c("", NA, "NA", " ")) == ncol(x))
+    empty.row <- empty.row & rownames(x) %in% c(NA, "", " ")
+    if (tail(empty.row, 1)) {
+      n <- which(!rev(empty.row))[1] - 1
+      ii <- (nrow(x) - n + 1):nrow(x)
+      x <- x[-ii, , drop = FALSE]
+    }
+  }
+  if (last.col.empty && !skip_row_check) { # bypass in case full NA rows
+    ## some csv have trailing empty columns at end of table
+    ## detect as empty column, columns with NA and weird characters
+    empty.col <- (colSums(is.na(x) | x %in% c("", "-", ".", "NA", " ")) == nrow(x))
+    empty.col <- empty.col & colnames(x) %in% c(NA, "", " ")
+    if (tail(empty.col, 1)) {
+      n <- which(!rev(empty.col))[1] - 1
+      ii <- (ncol(x) - n + 1):ncol(x)
+      x <- x[, -ii, drop = FALSE]
+    }
+  }
+  return(x)
+}
+
+#' Detect delimiter of text file from header (or first line)
+#'
+detect_delim <- function(file, delims = c(",", "\t", " ", "|", ":", ";")) {
+  # Code extracted from vroom:::guess_delim (version 1.5.7)
+  lines <- readLines(file, n = 10)
+
+  # blank text within quotes
+  lines <- gsub('"[^"]*"', "", lines)
+
+  splits <- lapply(delims, strsplit, x = lines, useBytes = TRUE, fixed = TRUE)
+  counts <- lapply(splits, function(x) table(lengths(x)))
+  num_fields <- vapply(counts, function(x) as.integer(names(x)[[1]]), integer(1))
+  num_lines <- vapply(counts, function(x) (x)[[1]], integer(1))
+  top_lines <- 0
+  top_idx <- 0
+  for (i in seq_along(delims)) {
+    if (num_fields[[i]] >= 2 && num_lines[[i]] > top_lines ||
+      (top_lines == num_lines[[i]] && (top_idx <= 0 || num_fields[[top_idx]] < num_fields[[i]]))) {
+      top_lines <- num_lines[[i]]
+      top_idx <- i
+    }
+  }
+  if (top_idx == 0) {
+    return(",") # default to comma
+  }
+
+  delims[[top_idx]]
+}
+
+#' Detect delimiter of text file from first 10 lines. Assumes there is
+#' a header and rownames column.
+#'
+detect_decimal <- function(file) {
+  f1 <- data.table::fread(file, header = TRUE, nrows = 100)
+  f2 <- data.table::fread(file, header = TRUE, colClasses = "character", nrows = 100)
+  numcols <- which(sapply(f1, class) == "numeric")
+  if (length(numcols) == 0) {
+    return(".")
+  } ## default
+  numvals <- as.vector(as.matrix(f2[, ..numcols]))
+  n_commas <- length(grep(",", numvals, fixed = TRUE))
+  n_dots <- length(grep(".", numvals, fixed = TRUE))
+  dec <- c(".", ",")[which.max(c(n_dots, n_commas))]
+  dec
+}
+
+#' Read CSV file into R efficiently
+#'
+#' @param file Path to CSV file
+#' @param check.names Logical, should column names be checked for syntactic validity. Default is FALSE.
+#' @param row.names Column to use for row names, default is 1 (first column).
+#' @param sep Separator character, default is "auto" for automatic detection.
+#' @param stringsAsFactors Logical, should character columns be converted to factors? Default is FALSE.
+#' @param header Logical, does the file have a header row? Default is TRUE.
+#' @param asMatrix Logical, should the result be returned as a matrix instead of a data frame? Default is TRUE.
+#'
+#' @return A data frame or matrix containing the parsed CSV data.
+#'
+#' @details This function efficiently reads a CSV file into R using \code{data.table::fread()}, then converts it into a regular data frame or matrix.
+#' It is faster than \code{read.csv()} especially for large files.
+#'
+#' By default it converts the result to a matrix if all columns are numeric, character or integer. The row names are taken from the first column.
+#' Factor conversion, column type checking, and header parsing can be controlled with parameters.
+#'
+#' @examples
+#' \dontrun{
+#' dat <- fread.csv("data.csv")
+#' }
+#' @export
+fread.csv <- function(file, check.names = FALSE, row.names = 1, sep = ",",
+                      stringsAsFactors = FALSE, header = TRUE, asMatrix = TRUE) {
+  df <- data.table::fread(
+    file = file, check.names = check.names, header = header, sep = sep, fill = TRUE
+  )
+  if (NCOL(df) == 1) {
+    ## empty file, only rownames
+    x <- matrix(NA, nrow(df), 0)
+    rownames(x) <- df[[row.names]] ## allow dups if matrix
+    return(x)
+  }
+  n0 <- ifelse(row.names == 0 || is.null(row.names), 1, 2)
+  colnames(df) <- substring(colnames(df), 1, 1000) ## safety, avoid length overflow
+  x <- data.frame(df[, n0:ncol(df)],
+    stringsAsFactors = stringsAsFactors,
+    check.names = check.names
+  )
+  ## check&correct for truncated header
+  if (row.names == 0) {
+    rn <- NULL
+  } else {
+    rn <- 1
+  }
+  hdr <- colnames(read.csv(file,
+    nrow = 1, sep = sep, header = TRUE,
+    row.names = rn, check.names = check.names
+  ))
+  if (!all(colnames(x) == hdr)) {
+    colnames(x) <- hdr
+  }
+  is.num <- all(sapply(x, class) == "numeric")
+  is.char <- all(sapply(x, class) == "character")
+  is.int <- all(sapply(x, class) == "integer")
+  if (asMatrix && (is.num || is.char || is.int)) x <- as.matrix(x)
+  if (!is.null(row.names) && row.names != 0) {
+    rownames(x) <- df[[row.names]] ## allow dups if matrix
+  }
+  return(x)
+}
