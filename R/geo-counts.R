@@ -1,8 +1,10 @@
-#' @describeIn pgx.getGEOcounts Download count data from GEO. First check
-#' if the GEO ID is in archs5, then in recount. If not, try to get from GEO.
-#' @return List of counts matrix and source.
-#' @param id GEO accession ID.
-#' @param archs.h5 Path to archs.h5 dataset.
+#' @title Download counts for a GEO series
+#' @description Tries each source in turn until one returns data: ARCHS4
+#' (when \code{archs.h5} is given), GEOquery, recount, then ArrayExpress.
+#' @param accession GEO accession ID.
+#' @param archs.h5 Path to the ARCHS4 HDF5 file, or NULL to skip ARCHS4.
+#' @return List with \code{expr} (counts), \code{samples} (metadata or NULL)
+#'   and \code{source}; NULL if no source had the series.
 #' @export
 pgx.getGEOcounts <- function(accession, archs.h5) {
   id <- accession
@@ -59,11 +61,14 @@ pgx.getGEOcounts <- function(accession, archs.h5) {
 ## Query GEO expression
 ## -------------------------------------------------------------------------------------
 
-#' @describeIn pgx.getGEOcounts.archs4 Downloads and extracts gene expression count
-#' data from a GEO series stored in an HDF5 file (if available). It searches the
-#' HDF5 file metadata to find samples matching the input GEO series ID, and returns
-#' the count matrix for those samples. It detects log2-scale and convert to linear.
-#' It also removes duplicated genes by summing in the linear scale
+#' @title Read GEO series counts from an ARCHS4 HDF5 file
+#' @description Finds the samples of a GEO series in the ARCHS4 HDF5 file and
+#' returns their count matrix. Log2 data is converted to linear, and
+#' duplicated genes are summed on the linear scale.
+#' @param id GEO accession ID.
+#' @param h5.file Path to the ARCHS4 HDF5 file.
+#' @return Counts matrix (genes x samples), or NULL if the series is not in
+#'   the file.
 #' @export
 pgx.getGEOcounts.archs4 <- function(id, h5.file) {
   is.valid.id <- is.GEO.id.valid(id)
@@ -109,12 +114,13 @@ pgx.getGEOcounts.archs4 <- function(id, h5.file) {
   return(counts)
 }
 
-#' @describeIn pgx.getGEOcounts.recount Downloads and processes gene-level count data
-#' for a GEO series from the recount database. It takes a GEO ID, searches recount,
-#' downloads the RangedSummarizedExperiment object, and returns the count matrix.
-#' It detects log2-scale and convert to linear. It also removes duplicated genes
-#' by summing in the linear scale.
-#' Vignette recount-quickstart.html
+#' @title Download GEO series counts from recount
+#' @description Searches recount for the GEO series, downloads its
+#' RangedSummarizedExperiment and returns the gene counts. Log2 data is
+#' converted to linear, and duplicated genes are summed on the linear scale.
+#' See the recount-quickstart vignette.
+#' @param accession GEO accession ID.
+#' @return Counts matrix (genes x samples), or NULL if recount has no match.
 #' @export
 pgx.getGEOcounts.recount <- function(accession) {
   id <- accession
@@ -163,11 +169,11 @@ pgx.getGEOcounts.recount <- function(accession) {
   return(counts)
 }
 
-#' @describeIn pgx.getArrayExpress.data retrieves expression count data for a
-#' accession ID using the arrayExpress R package. It downloads the counts and
-#' metadata. It detects log2-scale and convert to linear.
-#' \name {pgx.getArrayExpress.data}
-#' \title {Get ArrayExpress Data}
+#' @title Download data from ArrayExpress
+#' @description Downloads counts and sample metadata for an accession with the
+#' ArrayExpress package. Log2 data is converted to linear.
+#' @param accession ArrayExpress (or GEO) accession ID.
+#' @return List with \code{expr}, \code{samples} and \code{source}, or NULL.
 #' @export
 pgx.getArrayExpress.data <- function(accession) {
   id <- accession

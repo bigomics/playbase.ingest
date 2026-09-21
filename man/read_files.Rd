@@ -2,10 +2,21 @@
 % Please edit documentation in R/read.R
 \name{read_files}
 \alias{read_files}
-\title{Read all CSV file in folder or current directory}
+\title{Read counts, samples and contrasts files from a folder}
 \usage{
 read_files(dir = ".", pattern = NULL)
 }
+\arguments{
+\item{dir}{Folder to search.}
+
+\item{pattern}{Optional regular expression to pre-filter file names.}
+}
+\value{
+List with \code{counts}, \code{samples} and \code{contrasts}
+  (NULL for any file not found).
+}
 \description{
-Read all CSV file in folder or current directory
+Picks the first file whose name matches
+"count|expression|abundance|concentration|intensity", "sample" and
+"contrast|comparison" respectively.
 }

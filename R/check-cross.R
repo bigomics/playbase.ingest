@@ -1,8 +1,10 @@
-#' Cross check input files for pgx.computePGX
+#' Cross check the samples, counts and contrasts tables
 #'
-#' @param SAMPLE data.frame. The data frame corresponding to the input file as in playbase::SAMPLES
-#' @param COUNTS data.frame. The data frame corresponding to the input file as in playbase::COUNTS
-#' @param CONTRASTS data.frame. The data frame corresponding to the input file as in playbase::CONTRASTS
+#' @param SAMPLES Samples table (samples in rows).
+#' @param COUNTS Counts table (features in rows, samples in columns).
+#' @param CONTRASTS Contrasts table.
+#' @param PASS Logical. Result of the single-table checks; cross checks run
+#'   only while it is TRUE.
 #'
 #' @return a list with FIVE elements: SAMPLES, COUNTS and CONTRASTS that are the cleaned version of the
 #'  input data frames, `checks` which contains the status of the checks, and
@@ -118,10 +120,10 @@ pgx.crosscheckINPUT <- function(
   )
 }
 
-#' Convert contrasts for OPG
+#' Convert contrasts to a sample-wise label matrix and check it
 #'
-#' @param SAMPLE data.frame. The data frame corresponding to the input file as in playbase::SAMPLES
-#' @param CONTRASTS data.frame. The data frame corresponding to the input file as in playbase::CONTRASTS
+#' @param SAMPLES Samples table (samples in rows).
+#' @param CONTRASTS Contrasts table (group-wise or sample-wise).
 #' @param PASS boolean. The status of the checks.
 #' @return converted contrast df
 #' @export

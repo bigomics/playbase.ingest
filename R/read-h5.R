@@ -1,6 +1,9 @@
 #' Read scRNA-seq counts matrix in h5 format.
 #' Automatically 'infer' counts;features;cells from the h5 file structure.
 #' Attempts multiple ways.
+#' @param h5.file Path to an h5 / h5ad file.
+#' @return List with \code{counts} (features x cells) and \code{samples}
+#'   (cell metadata, or NULL).
 #' @export
 read_h5_counts <- function(h5.file) {
   if (!requireNamespace("rhdf5", quietly = TRUE)) {
@@ -164,6 +167,11 @@ read_h5_counts <- function(h5.file) {
 }
 
 #' @title Read (sub-)matrix from HDF5 file
+#' @param h5.file Path to the HDF5 file.
+#' @param rows,cols Row/column names or integer indices to read; NULL for all.
+#' @param matrixid,rowid,colid HDF5 paths of the matrix and its row and
+#'   column names.
+#' @return The requested matrix with dimnames.
 #'
 #' @export
 h5.readMatrix <- function(h5.file, rows = NULL, cols = NULL,

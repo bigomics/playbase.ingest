@@ -13,7 +13,7 @@ getError <- function(e, what = "Description") {
 #'  - no empty rows
 #'  - no duplicate cols
 #'
-#' @param data matrix.
+#' @param df Matrix or data frame, or path to a file read with \code{read.as_matrix()}.
 #'
 #' @return boolean. true if data is valid
 #' @export
@@ -40,7 +40,7 @@ validate_counts <- function(df) {
 #'  - no duplicate cols
 #'  - contains less than the max samples allowed
 #'
-#' @param data matrix.
+#' @param df Matrix or data frame, or path to a file read with \code{read.as_matrix()}.
 #'
 #' @return boolean. true if data is valid
 #' @export
@@ -67,7 +67,7 @@ validate_samples <- function(df) {
 #'  - no duplicate cols
 #'  - contains only cols with "_vs_" in names
 #'
-#' @param data matrix.
+#' @param df Matrix or data frame, or path to a file read with \code{read.as_matrix()}.
 #'
 #' @return boolean. true if data is valid
 #' @export

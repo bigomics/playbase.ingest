@@ -7,24 +7,27 @@
 read_counts(file, first = FALSE, unique = FALSE, paste_char = "_")
 }
 \arguments{
-\item{file}{string. path to file}
+\item{file}{Path to the file, or a matrix/data frame already read.}
 
-\item{first}{boolean. drop multiple feature names (separated by ;)}
+\item{first}{Logical. Keep only the first of multiple feature names
+(separated by ";", "," or "|").}
 
-\item{unique}{boolean. make duplicated rows unique by pasting a number}
+\item{unique}{Logical. Make duplicated row names unique by appending a number.}
 
-\item{drop_na_rows}{boolean. drop rows without rownames}
+\item{paste_char}{Unused; kept for backward compatibility.}
+}
+\value{
+Numeric matrix (features x samples).
 }
 \description{
 Read counts data from file
 }
 \details{
-This function reads a count matrix using \code{read.as_matrix()},
-validates it with \code{validate_counts()}, and optionally converts row names from IDs to
-gene symbols.
-
-It removes rows with NA, blank or invalid symbols, and collapses any duplicate symbols by
-summing counts across rows.
+Reads the table with \code{read.as_matrix()}. Leading annotation
+columns (character columns, or names like gene/id/compound/position) are
+dropped and the remaining columns are forced to numeric. When row names are
+duplicated, the annotation column that best disambiguates them is pasted
+onto the row names.
 }
 \examples{
 \dontrun{

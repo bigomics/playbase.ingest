@@ -2,7 +2,7 @@
 % Please edit documentation in R/check-cross.R
 \name{pgx.crosscheckINPUT}
 \alias{pgx.crosscheckINPUT}
-\title{Cross check input files for pgx.computePGX}
+\title{Cross check the samples, counts and contrasts tables}
 \usage{
 pgx.crosscheckINPUT(
   SAMPLES = NULL,
@@ -12,11 +12,14 @@ pgx.crosscheckINPUT(
 )
 }
 \arguments{
-\item{COUNTS}{data.frame. The data frame corresponding to the input file as in playbase::COUNTS}
+\item{SAMPLES}{Samples table (samples in rows).}
 
-\item{CONTRASTS}{data.frame. The data frame corresponding to the input file as in playbase::CONTRASTS}
+\item{COUNTS}{Counts table (features in rows, samples in columns).}
 
-\item{SAMPLE}{data.frame. The data frame corresponding to the input file as in playbase::SAMPLES}
+\item{CONTRASTS}{Contrasts table.}
+
+\item{PASS}{Logical. Result of the single-table checks; cross checks run
+only while it is TRUE.}
 }
 \value{
 a list with FIVE elements: SAMPLES, COUNTS and CONTRASTS that are the cleaned version of the
@@ -24,5 +27,5 @@ a list with FIVE elements: SAMPLES, COUNTS and CONTRASTS that are the cleaned ve
  `PASS` which contains the overall status of the check.
 }
 \description{
-Cross check input files for pgx.computePGX
+Cross check the samples, counts and contrasts tables
 }

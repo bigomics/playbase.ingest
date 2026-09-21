@@ -6,6 +6,17 @@
 \usage{
 read_annot(file, unique = TRUE)
 }
+\arguments{
+\item{file}{Path to the file, or a matrix/data frame already read.}
+
+\item{unique}{Unused; kept for backward compatibility.}
+}
+\value{
+Annotation matrix with features in rows, or NULL when the file has
+  no annotation columns.
+}
 \description{
-Read gene/probe annotation file
+Keeps the annotation (character) columns and drops trailing numeric
+columns such as intensities. Duplicated row names get the best
+disambiguating column pasted on.
 }

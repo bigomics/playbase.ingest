@@ -2,7 +2,7 @@
 % Please edit documentation in R/check.R
 \name{pgx.checkINPUT}
 \alias{pgx.checkINPUT}
-\title{Check input files for pgx.computePGX}
+\title{Check an uploaded input table before a pgx object is built}
 \usage{
 pgx.checkINPUT(df, type = c("SAMPLES", "COUNTS", "EXPRESSION", "CONTRASTS"))
 }
@@ -18,5 +18,5 @@ a list with two elements: `checks` which contains the status of the checks, and
  `PASS` which contains the overall status of the check.
 }
 \description{
-Check input files for pgx.computePGX
+Check an uploaded input table before a pgx object is built
 }

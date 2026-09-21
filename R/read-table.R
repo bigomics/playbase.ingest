@@ -3,6 +3,10 @@
 #' @param file Path to input data file
 #' @param skip_row_check (default `FALSE`) Flag to skip the removal
 #' of empty rows
+#' @param as.char Logical. Convert all columns to character before building
+#'   the matrix, so mixed column types are not coerced unpredictably.
+#' @param as.matrix Logical. Return a matrix (TRUE) or a data.table (FALSE).
+#' @param row.names Column to use as row names (default 1), or NULL for none.
 #'
 #' @return Matrix object containing data from file
 #'
@@ -160,6 +164,10 @@ read.as_matrix <- function(file, skip_row_check = FALSE, as.char = TRUE,
 
 #' Detect delimiter of text file from header (or first line)
 #'
+#' @param file Path to a text file.
+#' @param delims Candidate delimiters.
+#' @return The delimiter that splits the first 10 lines most consistently
+#'   (comma if none does).
 detect_delim <- function(file, delims = c(",", "\t", " ", "|", ":", ";")) {
   # Code extracted from vroom:::guess_delim (version 1.5.7)
   lines <- readLines(file, n = 10)
@@ -187,9 +195,11 @@ detect_delim <- function(file, delims = c(",", "\t", " ", "|", ":", ";")) {
   delims[[top_idx]]
 }
 
-#' Detect delimiter of text file from first 10 lines. Assumes there is
-#' a header and rownames column.
+#' Detect decimal separator of text file from its first 100 rows. Assumes
+#' there is a header and rownames column.
 #'
+#' @param file Path to a text file.
+#' @return "." or ",".
 detect_decimal <- function(file) {
   f1 <- data.table::fread(file, header = TRUE, nrows = 100)
   f2 <- data.table::fread(file, header = TRUE, colClasses = "character", nrows = 100)

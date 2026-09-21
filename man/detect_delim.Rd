@@ -6,6 +6,15 @@
 \usage{
 detect_delim(file, delims = c(",", "\\t", " ", "|", ":", ";"))
 }
+\arguments{
+\item{file}{Path to a text file.}
+
+\item{delims}{Candidate delimiters.}
+}
+\value{
+The delimiter that splits the first 10 lines most consistently
+  (comma if none does).
+}
 \description{
 Detect delimiter of text file from header (or first line)
 }

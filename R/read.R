@@ -1,5 +1,13 @@
-#' Read all CSV file in folder or current directory
+#' Read counts, samples and contrasts files from a folder
 #'
+#' Picks the first file whose name matches
+#' "count|expression|abundance|concentration|intensity", "sample" and
+#' "contrast|comparison" respectively.
+#'
+#' @param dir Folder to search.
+#' @param pattern Optional regular expression to pre-filter file names.
+#' @return List with \code{counts}, \code{samples} and \code{contrasts}
+#'   (NULL for any file not found).
 #' @export
 read_files <- function(dir = ".", pattern = NULL) {
   ff <- dir(dir, pattern = pattern)
@@ -23,17 +31,19 @@ read_files <- function(dir = ".", pattern = NULL) {
 
 #' Read counts data from file
 #'
-#' @param file string. path to file
-#' @param drop_na_rows boolean. drop rows without rownames
-#' @param first boolean. drop multiple feature names (separated by ;)
-#' @param unique boolean. make duplicated rows unique by pasting a number
+#' @param file Path to the file, or a matrix/data frame already read.
+#' @param first Logical. Keep only the first of multiple feature names
+#'   (separated by ";", "," or "|").
+#' @param unique Logical. Make duplicated row names unique by appending a number.
+#' @param paste_char Unused; kept for backward compatibility.
 #'
-#' @details This function reads a count matrix using \code{read.as_matrix()},
-#' validates it with \code{validate_counts()}, and optionally converts row names from IDs to
-#' gene symbols.
+#' @details Reads the table with \code{read.as_matrix()}. Leading annotation
+#' columns (character columns, or names like gene/id/compound/position) are
+#' dropped and the remaining columns are forced to numeric. When row names are
+#' duplicated, the annotation column that best disambiguates them is pasted
+#' onto the row names.
 #'
-#' It removes rows with NA, blank or invalid symbols, and collapses any duplicate symbols by
-#' summing counts across rows.
+#' @return Numeric matrix (features x samples).
 #'
 #' @examples
 #' \dontrun{
@@ -130,6 +140,15 @@ read_contrasts <- function(file) {
 }
 
 #' Read gene/probe annotation file
+#'
+#' Keeps the annotation (character) columns and drops trailing numeric
+#' columns such as intensities. Duplicated row names get the best
+#' disambiguating column pasted on.
+#'
+#' @param file Path to the file, or a matrix/data frame already read.
+#' @param unique Unused; kept for backward compatibility.
+#' @return Annotation matrix with features in rows, or NULL when the file has
+#'   no annotation columns.
 #' @export
 read_annot <- function(file, unique = TRUE) {
   if (is.character(file)) {
@@ -178,6 +197,11 @@ read_annot <- function(file, unique = TRUE) {
   return(df)
 }
 
+#' First name of multi-feature IDs
+#'
+#' @param x Character vector of feature IDs, possibly holding several names
+#'   separated by ";", "," or "|".
+#' @return Character vector with the first name of each ID.
 #' @export
 first_feature <- function(x) {
   unname(sapply(strsplit(x, split = "[;,\\|]"), "[[", 1))

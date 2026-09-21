@@ -18,6 +18,9 @@ trimsame0(s, split = " ", summarize = FALSE, rev = FALSE)
 \item{split}{An optional character string specifying the delimiter used to split the strings into words.
 The default value is a space (" ").}
 
+\item{ends}{Logical. Trim common words at both ends (TRUE) or only the
+prefix (FALSE).}
+
 \item{summarize}{An optional logical value indicating whether to summarize the common prefix using the first letter of each word.
 The default value is `FALSE`.}
 
