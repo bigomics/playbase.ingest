@@ -1,0 +1,31 @@
+Package: playbase.ingest
+Type: Package
+Title: Data Ingestion for OmicsPlayground
+Version: 0.1.0
+Author: BigOmics Analytics SA
+Maintainer: The package maintainer <ivo.kwee@bigomics.com>
+Description: Readers and input validation for OmicsPlayground datasets:
+    delimited count, sample and contrast tables, platform exports
+    (Olink NPX, Spectronaut, 10X Cell Ranger, h5/h5ad), GMT gene sets,
+    and the upload checks run before a pgx object is built. A leaf
+    dependency of playbase.
+License: Dual Commercial and Non-Commercial
+Encoding: UTF-8
+LazyData: true
+Depends:
+    R (>= 3.5)
+Imports:
+    bit64,
+    data.table,
+    Matrix,
+    methods,
+    stats,
+    utils
+Suggests:
+    arrow,
+    OlinkAnalyze,
+    rhdf5,
+    Seurat,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Config/roxygen2/version: 8.1.0
