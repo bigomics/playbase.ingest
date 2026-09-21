@@ -8,9 +8,3 @@
 #' @importFrom methods is
 #' @keywords internal
 "_PACKAGE"
-
-#' Checks performed by pgx.checkINPUT
-#'
-#' @format ## `data.frame`
-#' rows are checks, columns are description of the check performed.
-"PGX_CHECKS"

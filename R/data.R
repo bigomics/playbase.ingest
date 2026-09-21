@@ -10,3 +10,8 @@ example_file <- function(file = NULL) {
   }
 }
 
+#' Checks performed by pgx.checkINPUT
+#'
+#' @format ## `data.frame`
+#' rows are checks, columns are description of the check performed.
+"PGX_CHECKS"

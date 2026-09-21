@@ -69,3 +69,54 @@ pgx.read_singlecell_counts <- function(filename) {
   counts
 }
 
+#' Read 10X Cell Ranger Software output (version V3 onwards).
+#' @param file .tar.gz or .zip compressed directory
+#' @return Count gene expression data matrix (sparse dgCMatrix)
+#' @export
+read_cellranger_output <- function(file) {
+  if (!requireNamespace("Seurat", quietly = TRUE)) {
+    stop("read_cellranger_output() requires the 'Seurat' package (Suggests); install it to read 10X Cell Ranger output.")
+  }
+  msg <- function(...) message("[playbase.ingest::read_cellranger_output] ", ...)
+
+  msg("Reading 10X Cell Ranger output...")
+  tmp <- tempfile()
+  dir.create(tmp)
+  on.exit(unlink(tmp, recursive = TRUE), add = TRUE) # deletes tmp always.
+
+  if (grepl("\\.tar\\.gz$|\\.gz$", file)) {
+    msg(".tar or .gz compressed file detected...")
+    utils::untar(file, exdir = tmp)
+    dir <- tmp
+  } else if (grepl("\\.zip$", file)) {
+    msg(".zip compressed file detected...")
+    utils::unzip(file, exdir = tmp)
+    dir <- tmp
+  }
+
+  ff1 <- c("barcodes.tsv.gz", "features.tsv.gz", "matrix.mtx.gz")
+  ff2 <- c("barcodes.tsv", "genes.tsv", "matrix.mtx")
+  mex_dir <- NULL
+  Data <- list.dirs(dir, recursive = TRUE)
+  for (i in 1:length(Data)) {
+    files <- list.files(Data[i])
+    has_mex <- all(ff1 %in% files) || all(ff2 %in% files)
+    if (has_mex) {
+      mex_dir <- Data[i]
+      break
+    }
+  }
+
+  if (is.null(mex_dir)) {
+    msg("Could not find MEX directory (barcodes/features/matrix files) in: ", dir)
+    return(NULL)
+  }
+
+  require(Seurat) # do not remove
+  counts <- Seurat::Read10X(data.dir = mex_dir)
+  if (is.list(counts)) counts <- counts[["Gene Expression"]]
+
+  msg("Completed. Expression matrix: ", nrow(counts), " x ", ncol(counts), ".\n")
+  gc()
+  return(counts)
+}

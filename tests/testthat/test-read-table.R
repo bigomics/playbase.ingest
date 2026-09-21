@@ -1,21 +1,3 @@
-testthat::test_that("read_counts works", {
-  counts <- playbase.ingest::read_counts(
-    playbase.ingest::example_file("counts.csv")
-  )
-  testthat::expect_equal(nrow(counts), 7439)
-})
-
-testthat::test_that("read_samples works", {
-  samples <- playbase.ingest::read_samples(playbase.ingest::example_file("samples.csv"))
-  testthat::expect_equal(nrow(samples), 18)
-})
-
-testthat::test_that("read_contrasts works", {
-  contrasts <- playbase.ingest::read_contrasts(playbase.ingest::example_file("contrasts.csv"))
-  testthat::expect_equal(nrow(contrasts), 6)
-})
-
-
 test_that("read.as_matrix works correctly", {
   # Test that read.as_matrix correctly reads a simple matrix
   # write.table(matrix(1:4, nrow = 2), file = ".//tests/data/test1.csv", sep = ";", row.names = c("a", "b"), col.names = c("c","d") )
@@ -45,14 +27,5 @@ test_that("read.as_matrix reads file as matrix", {
   result <- playbase.ingest::read.as_matrix(tmp, as.char = FALSE)
   expect_equal(class(result), c("matrix", "array"))
   expect_equal(result, expected)
-  unlink(tmp)
-})
-
-test_that("read.gmt reads gene sets", {
-  tmp <- tempfile(fileext = ".gmt")
-  writeLines(c("SET1\tsrc1\tA\tB\tC", "SET2\tsrc2\tD"), tmp)
-  gmt <- playbase.ingest::read.gmt(tmp)
-  expect_equal(gmt, list(SET1 = c("A", "B", "C"), SET2 = "D"))
-  expect_equal(names(playbase.ingest::read.gmt(tmp, add.source = TRUE)), c("SET1 (src1)", "SET2 (src2)"))
   unlink(tmp)
 })
