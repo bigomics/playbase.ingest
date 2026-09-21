@@ -2,3 +2,5 @@
 ^README\.md$
 ^\.github$
 ^data-raw$
+^AGENTS\.md$
+^CLAUDE\.md$
