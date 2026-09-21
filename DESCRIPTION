@@ -6,9 +6,9 @@ Author: BigOmics Analytics SA
 Maintainer: The package maintainer <ivo.kwee@bigomics.com>
 Description: Readers and input validation for OmicsPlayground datasets:
     delimited count, sample and contrast tables, platform exports
-    (Olink NPX, Spectronaut, 10X Cell Ranger, h5/h5ad), GMT gene sets,
-    and the upload checks run before a pgx object is built. A leaf
-    dependency of playbase.
+    (Olink NPX, Spectronaut, 10X Cell Ranger, h5/h5ad, Seurat), GEO and
+    ArrayExpress downloads, GMT gene sets, and the upload checks run
+    before a pgx object is built. A leaf dependency of playbase.
 License: Dual Commercial and Non-Commercial
 Encoding: UTF-8
 LazyData: true
@@ -20,12 +20,23 @@ Imports:
     Matrix,
     methods,
     stats,
+    tools,
     utils
 Suggests:
+    AnnotationDbi,
+    ArrayExpress,
     arrow,
+    Biobase,
+    GEOquery,
+    msa,
+    MultiAssayExperiment,
     OlinkAnalyze,
+    org.Hs.eg.db,
+    R.utils,
+    recount,
     rhdf5,
     Seurat,
+    SummarizedExperiment,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Config/roxygen2/version: 8.1.0
