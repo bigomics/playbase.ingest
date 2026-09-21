@@ -7,7 +7,7 @@
 read_spectronaut(file)
 }
 \arguments{
-\item{Path}{to Spectronaut output abundance file.}
+\item{file}{Path to Spectronaut output abundance file.}
 }
 \value{
 abundance data matrix (features on rows; samples on columns)

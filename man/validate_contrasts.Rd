@@ -7,7 +7,7 @@
 validate_contrasts(df)
 }
 \arguments{
-\item{data}{matrix.}
+\item{df}{Matrix or data frame, or path to a file read with \code{read.as_matrix()}.}
 }
 \value{
 boolean. true if data is valid

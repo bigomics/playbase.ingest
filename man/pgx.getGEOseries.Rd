@@ -2,20 +2,24 @@
 % Please edit documentation in R/geo.R
 \name{pgx.getGEOseries}
 \alias{pgx.getGEOseries}
-\title{pgx.getGEOseries}
+\title{Download a GEO series}
 \usage{
 pgx.getGEOseries(accession, archs.h5 = "human_matrix.h5", get.info = TRUE)
 }
 \arguments{
-\item{accession}{GEO accession}
+\item{accession}{GEO accession ID.}
 
-\item{archs.h5}{Path to ARCHS4 HDF5 file containing GEO data}
+\item{archs.h5}{Path to ARCHS4 HDF5 file containing GEO data.}
+
+\item{get.info}{Logical. Also download the series description with
+\code{pgx.getGEOexperimentInfo()}.}
 }
 \value{
-List containing processed counts, sample metadata, and genes
+List with \code{counts}, \code{samples}, \code{info} and
+  \code{source}.
 }
 \description{
-Download and process GEO dataset
+Downloads counts and sample metadata for a GEO series.
 }
 \details{
 Downloads GEO accession ID data. First checks if the data is

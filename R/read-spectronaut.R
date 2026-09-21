@@ -1,5 +1,5 @@
 #' Read Spectronaut output abundance global proteome data file.
-#' @param Path to Spectronaut output abundance file.
+#' @param file Path to Spectronaut output abundance file.
 #' @return abundance data matrix (features on rows; samples on columns)
 #' @export
 read_spectronaut <- function(file) {
@@ -79,7 +79,7 @@ read_spectronaut <- function(file) {
 }
 
 #' Read Spectronaut output hPTM abundance data file.
-#' @param Path to Spectronaut output hPTM abundance file.
+#' @param file Path to Spectronaut output hPTM abundance file.
 #' @param use_ptm_norm Boolean. Use PTM abudances normalized to the global proteome. Default TRUE.
 #' @return Abundance data matrix + annotation (features on rows; samples on columns)
 #' @export

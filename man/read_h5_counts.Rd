@@ -8,6 +8,13 @@ Attempts multiple ways.}
 \usage{
 read_h5_counts(h5.file)
 }
+\arguments{
+\item{h5.file}{Path to an h5 / h5ad file.}
+}
+\value{
+List with \code{counts} (features x cells) and \code{samples}
+  (cell metadata, or NULL).
+}
 \description{
 Read scRNA-seq counts matrix in h5 format.
 Automatically 'infer' counts;features;cells from the h5 file structure.

@@ -7,9 +7,9 @@
 read_spectronaut_hPTM(file, use_ptm_norm = TRUE)
 }
 \arguments{
-\item{use_ptm_norm}{Boolean. Use PTM abudances normalized to the global proteome. Default TRUE.}
+\item{file}{Path to Spectronaut output hPTM abundance file.}
 
-\item{Path}{to Spectronaut output hPTM abundance file.}
+\item{use_ptm_norm}{Boolean. Use PTM abudances normalized to the global proteome. Default TRUE.}
 }
 \value{
 Abundance data matrix + annotation (features on rows; samples on columns)

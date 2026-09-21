@@ -13,6 +13,17 @@ h5.readMatrix(
   colid = "data/colnames"
 )
 }
+\arguments{
+\item{h5.file}{Path to the HDF5 file.}
+
+\item{rows, cols}{Row/column names or integer indices to read; NULL for all.}
+
+\item{matrixid, rowid, colid}{HDF5 paths of the matrix and its row and
+column names.}
+}
+\value{
+The requested matrix with dimnames.
+}
 \description{
 Read (sub-)matrix from HDF5 file
 }

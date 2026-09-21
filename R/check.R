@@ -1,4 +1,4 @@
-#' Check input files for pgx.computePGX
+#' Check an uploaded input table before a pgx object is built
 #'
 #' @param df data.frame. The data frame corresponding to the input file as
 #'   described in Omics Playground documentation

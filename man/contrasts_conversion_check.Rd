@@ -2,20 +2,20 @@
 % Please edit documentation in R/check-cross.R
 \name{contrasts_conversion_check}
 \alias{contrasts_conversion_check}
-\title{Convert contrasts for OPG}
+\title{Convert contrasts to a sample-wise label matrix and check it}
 \usage{
 contrasts_conversion_check(SAMPLES, CONTRASTS, PASS)
 }
 \arguments{
-\item{CONTRASTS}{data.frame. The data frame corresponding to the input file as in playbase::CONTRASTS}
+\item{SAMPLES}{Samples table (samples in rows).}
+
+\item{CONTRASTS}{Contrasts table (group-wise or sample-wise).}
 
 \item{PASS}{boolean. The status of the checks.}
-
-\item{SAMPLE}{data.frame. The data frame corresponding to the input file as in playbase::SAMPLES}
 }
 \value{
 converted contrast df
 }
 \description{
-Convert contrasts for OPG
+Convert contrasts to a sample-wise label matrix and check it
 }

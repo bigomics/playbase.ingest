@@ -1,8 +1,11 @@
-#' @describeIn pgx.getGEOcounts.GEOquery retrieves expression count data for a
-#' GEO accession ID using the GEOquery package. It downloads the series matrix data,
-#' platform metadata, and probe annotations from GEO into R objects.
-#' It detects log2-scale and convert to linear.
-#' It also removes duplicated genes by summing in the linear scale
+#' @title Download GEO series counts with GEOquery
+#' @description Downloads the series matrix (or RNA-seq counts / supplementary
+#' files), platform metadata and probe annotation from GEO, and maps probes to
+#' gene symbols. Log2 data is converted to linear, and duplicated genes are
+#' summed on the linear scale.
+#' @param accession GEO accession ID.
+#' @return List with \code{expr} (counts) and \code{meta} (sample metadata),
+#'   or NULL.
 #' @export
 pgx.getGEOcounts.GEOquery <- function(accession) {
   id <- accession

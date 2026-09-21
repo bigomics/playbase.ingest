@@ -94,12 +94,6 @@ is_logged <- function(x, verbose = 0) {
 #'
 #' @return Data frame of group labels.
 #'
-#' @examples
-#' \dontrun{
-#' contrast <- playbase::CONTRASTS
-#' z <- playbase::contrastAsLabels(contrast)
-#' z
-#' }
 #' @noRd
 contrastAsLabels <- function(contr.matrix, as.factor = FALSE) {
   contrastAsLabels.col <- function(contr, contr.name) {

@@ -2,12 +2,18 @@
 % Please edit documentation in R/read-table.R
 \name{detect_decimal}
 \alias{detect_decimal}
-\title{Detect delimiter of text file from first 10 lines. Assumes there is
-a header and rownames column.}
+\title{Detect decimal separator of text file from its first 100 rows. Assumes
+there is a header and rownames column.}
 \usage{
 detect_decimal(file)
 }
+\arguments{
+\item{file}{Path to a text file.}
+}
+\value{
+"." or ",".
+}
 \description{
-Detect delimiter of text file from first 10 lines. Assumes there is
-a header and rownames column.
+Detect decimal separator of text file from its first 100 rows. Assumes
+there is a header and rownames column.
 }

@@ -40,6 +40,12 @@ seurat2pgx <- function(obj) {
   return(pgx)
 }
 
+#' Read a single-cell counts matrix
+#'
+#' @param filename A \code{.csv} file (genes in rows), a 10X \code{.mtx} file
+#'   with \code{barcodes.tsv} and \code{genes.tsv} next to it, or a 10X
+#'   \code{.h5} file.
+#' @return Counts matrix (genes x cells), or NULL for other extensions.
 #' @export
 pgx.read_singlecell_counts <- function(filename) {
   counts <- NULL

@@ -2,7 +2,7 @@
 % Please edit documentation in R/geo-pheno.R
 \name{title2pheno}
 \alias{title2pheno}
-\title{Get pheno from title [??]}
+\title{Parse phenotype columns from sample titles}
 \usage{
 title2pheno(title, split = NULL, trim = TRUE, summarize = TRUE)
 }
@@ -16,5 +16,5 @@ title2pheno(title, split = NULL, trim = TRUE, summarize = TRUE)
 \item{summarize}{summarize the terms by counting the number of occurrences of each term}
 }
 \description{
-Get pheno from title [??]
+Parse phenotype columns from sample titles
 }

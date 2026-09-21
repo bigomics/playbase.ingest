@@ -11,7 +11,7 @@ eset.getPhenoData <- function(eset, field) {
   pData(phenoData(eset))[, field]
 }
 
-#' Get pheno from title [??]
+#' Parse phenotype columns from sample titles
 #' @param title character vector with the titles
 #' @param split delimiter character to split on `c(",", ";", "\\|", "_", " ")`.
 #' @param trim trim leading and trailing whitespace from each term
@@ -75,6 +75,8 @@ title2pheno <- function(title, split = NULL, trim = TRUE, summarize = TRUE) {
 
 #' @describeIn eset.getPhenoData Phenotype data from the title of an
 #' ExpressionSet object by splitting the title on a specified delimiter and guessing column names.
+#' @param title Character vector of sample titles.
+#' @param split Delimiter to split titles on; guessed when NULL.
 #' @export
 eset.parsePhenoFromTitle <- function(title, split = NULL) {
   if (!all(grepl(split, title))) {
@@ -138,6 +140,8 @@ eset.parsePhenoFromTitle <- function(title, split = NULL) {
 
 #' @describeIn trimsame0 trimsame is a function that trims common prefixes and/or
 #' suffixes from a character vector by applying trimsame0 forwards and/or backwards.
+#' @param ends Logical. Trim common words at both ends (TRUE) or only the
+#'   prefix (FALSE).
 #' @export
 trimsame <- function(s, split = " ", ends = TRUE, summarize = FALSE) {
   if (all(is.na(s)) || all(s == "")) {

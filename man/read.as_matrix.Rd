@@ -17,6 +17,13 @@ read.as_matrix(
 
 \item{skip_row_check}{(default `FALSE`) Flag to skip the removal
 of empty rows}
+
+\item{as.char}{Logical. Convert all columns to character before building
+the matrix, so mixed column types are not coerced unpredictably.}
+
+\item{as.matrix}{Logical. Return a matrix (TRUE) or a data.table (FALSE).}
+
+\item{row.names}{Column to use as row names (default 1), or NULL for none.}
 }
 \value{
 Matrix object containing data from file

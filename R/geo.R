@@ -8,11 +8,14 @@
 ## Query GEO
 ## -------------------------------------------------------------------------------------
 
-#' @title pgx.getGEOseries
-#' @description Download and process GEO dataset
-#' @param accession GEO accession
-#' @param archs.h5 Path to ARCHS4 HDF5 file containing GEO data
-#' @return List containing processed counts, sample metadata, and genes
+#' @title Download a GEO series
+#' @description Downloads counts and sample metadata for a GEO series.
+#' @param accession GEO accession ID.
+#' @param archs.h5 Path to ARCHS4 HDF5 file containing GEO data.
+#' @param get.info Logical. Also download the series description with
+#'   \code{pgx.getGEOexperimentInfo()}.
+#' @return List with \code{counts}, \code{samples}, \code{info} and
+#'   \code{source}.
 #' @details Downloads GEO accession ID data. First checks if the data is
 #' in ARCHS4. If not, it tries to get from GEO. Ultimately, it checks if
 #' it is in recount. Counts and sample matrices are aligned.
@@ -109,9 +112,9 @@ pgx.getGEOseries <- function(accession,
 ## HELPER functions
 ## -------------------------------------------------------------------------------------
 
-#' @param id GEO accession ID
-#' @return Boolean
-#' @details Checks whether GEO accession ID is alphanumeric as per convention.
+#' @title Check a GEO accession ID
+#' @param accession GEO accession ID.
+#' @return TRUE if the ID is non-empty and contains both letters and digits.
 #' @export
 is.GEO.id.valid <- function(accession) {
   id <- accession

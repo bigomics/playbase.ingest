@@ -13,6 +13,10 @@ eset.parsePhenoFromTitle(title, split = NULL)
 \item{eset}{ExpressionSet object}
 
 \item{field}{Character string specifying phenotype data field name}
+
+\item{title}{Character vector of sample titles.}
+
+\item{split}{Delimiter to split titles on; guessed when NULL.}
 }
 \value{
 Vector of values for the specified field

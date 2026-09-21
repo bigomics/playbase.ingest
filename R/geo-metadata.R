@@ -1,5 +1,8 @@
-#' @describeIn pgx.getGEOmetadata Download and extract the metadata from a GEO ID.
-#' It attemtps without GSEMatrix first, and then with GSEMatrix.
+#' @title Download sample metadata for a GEO series
+#' @description Tries the per-sample GSM records first, then the GSE Series
+#' Matrix.
+#' @param accession GEO accession ID.
+#' @return Data frame of sample metadata (samples in rows), or NULL.
 #' @export
 pgx.getGEOmetadata <- function(accession) {
   id <- accession
@@ -26,8 +29,9 @@ pgx.getGEOmetadata <- function(accession) {
 ## Query GEO metadata
 ## -------------------------------------------------------------------------------------
 
-#' @describeIn pgx.getGEOexperimentInfo Retrieves GEO accession ID info using GEOquery.
-#' @param id GEO accession ID
+#' @title Download the description of a GEO series
+#' @param id GEO accession ID.
+#' @return The GSE header (a named list: title, summary, design, ...), or NULL.
 #' @export
 pgx.getGEOexperimentInfo <- function(id) {
   is.valid.id <- is.GEO.id.valid(id)
@@ -45,9 +49,11 @@ pgx.getGEOexperimentInfo <- function(id) {
   return(gse@header) ## can be a big list!
 }
 
-#' @describeIn pgx.getGeoMetadata.fromGSM Retrieves metadata for a GEO accession ID.
-#' It attemps without GSE Series Matrix files from GEO.
+#' @title Sample metadata from GEO GSM records
+#' @description Builds the sample table from the individual GSM records of a
+#' series, without the GSE Series Matrix files.
 #' @param id GEO accession ID.
+#' @return Data frame of sample metadata, or NULL.
 #' @export
 pgx.getGEOmetadata.fromGSM <- function(id) {
   is.valid.id <- is.GEO.id.valid(id)
@@ -121,9 +127,11 @@ pgx.getGEOmetadata.fromGSM <- function(id) {
   # if (!is.null(title_info)) sample_info <- cbind(sample_info, title_info)
 }
 
-#' @describeIn pgx.getGEOmetadata.fromEset Retrieves sample metadata from Eset.
-#' It downloads the GSE Series Matrix files from GEO and extract sample metadata.
-#' @param id GEO accession ID
+#' @title Sample metadata from the GEO Series Matrix
+#' @description Downloads the GSE Series Matrix files and extracts the sample
+#' metadata from their ExpressionSets.
+#' @param id GEO accession ID.
+#' @return Data frame of sample metadata, or NULL.
 #' @export
 pgx.getGEOmetadata.fromEset <- function(id) {
   is.valid.id <- is.GEO.id.valid(id)
@@ -151,8 +159,9 @@ pgx.getGEOmetadata.fromEset <- function(id) {
   return(meta)
 }
 
-#' @describeIn pgx.getGEOmetadata.fromEset.helper Extracts phenotype data from a Eset object.
-#' @param eset Eset object
+#' @title Sample metadata from one ExpressionSet
+#' @param eset ExpressionSet from GEOquery.
+#' @return Data frame of sample metadata.
 #' @export
 pgx.getGEOmetadata.fromEset.helper <- function(eset) {
   if (!class(eset) %in% "ExpressionSet") {
