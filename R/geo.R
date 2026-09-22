@@ -11,17 +11,17 @@
 #' @title Download a GEO series
 #' @description Downloads counts and sample metadata for a GEO series.
 #' @param accession GEO accession ID.
-#' @param archs.h5 Path to ARCHS4 HDF5 file containing GEO data.
+#' @param archs.h5 Path to an ARCHS4 HDF5 file. NULL (default) skips ARCHS4.
 #' @param get.info Logical. Also download the series description with
 #'   \code{pgx.getGEOexperimentInfo()}.
 #' @return List with \code{counts}, \code{samples}, \code{info} and
 #'   \code{source}.
-#' @details Downloads GEO accession ID data. First checks if the data is
-#' in ARCHS4. If not, it tries to get from GEO. Ultimately, it checks if
-#' it is in recount. Counts and sample matrices are aligned.
+#' @details Downloads GEO accession ID data. It tries ARCHS4 only when
+#' \code{archs.h5} is given, then GEO, then recount. Counts and sample
+#' matrices are aligned.
 #' @export
 pgx.getGEOseries <- function(accession,
-                             archs.h5 = "human_matrix.h5",
+                             archs.h5 = NULL,
                              get.info = TRUE) {
   id <- accession
   is.valid.id <- is.GEO.id.valid(id)
@@ -29,7 +29,6 @@ pgx.getGEOseries <- function(accession,
   id <- as.character(id)
 
   meta <- NULL
-  archs.h5 <- NULL
   geo <- pgx.getGEOcounts(id, archs.h5 = archs.h5)
   source <- geo[["source"]]
   counts <- geo[["expr"]]

@@ -4,12 +4,12 @@
 \alias{pgx.getGEOseries}
 \title{Download a GEO series}
 \usage{
-pgx.getGEOseries(accession, archs.h5 = "human_matrix.h5", get.info = TRUE)
+pgx.getGEOseries(accession, archs.h5 = NULL, get.info = TRUE)
 }
 \arguments{
 \item{accession}{GEO accession ID.}
 
-\item{archs.h5}{Path to ARCHS4 HDF5 file containing GEO data.}
+\item{archs.h5}{Path to an ARCHS4 HDF5 file. NULL (default) skips ARCHS4.}
 
 \item{get.info}{Logical. Also download the series description with
 \code{pgx.getGEOexperimentInfo()}.}
@@ -22,7 +22,7 @@ List with \code{counts}, \code{samples}, \code{info} and
 Downloads counts and sample metadata for a GEO series.
 }
 \details{
-Downloads GEO accession ID data. First checks if the data is
-in ARCHS4. If not, it tries to get from GEO. Ultimately, it checks if
-it is in recount. Counts and sample matrices are aligned.
+Downloads GEO accession ID data. It tries ARCHS4 only when
+\code{archs.h5} is given, then GEO, then recount. Counts and sample
+matrices are aligned.
 }
