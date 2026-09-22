@@ -6,9 +6,6 @@
 #'   (cell metadata, or NULL).
 #' @export
 read_h5_counts <- function(h5.file) {
-  if (!requireNamespace("rhdf5", quietly = TRUE)) {
-    stop("read_h5_counts() requires the 'rhdf5' package (Suggests); install it to read HDF5/h5ad files.")
-  }
   message("[playbase.ingest::read_h5_counts] Reading h5 file: ", h5.file)
   df <- NULL
 

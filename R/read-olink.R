@@ -4,9 +4,6 @@
 #' @return Sample metadata matrix (samples on rows; metadata on columns)
 #' @export
 read_Olink_NPX <- function(NPX_data) {
-  if (!requireNamespace("OlinkAnalyze", quietly = TRUE)) {
-    stop("read_Olink_NPX() requires the 'OlinkAnalyze' package (Suggests); install it to read Olink NPX files.")
-  }
   NPX <- try(OlinkAnalyze::read_NPX(NPX_data), silent = TRUE)
   if (inherits(NPX, "try-error")) {
     message("[read_Olink_NPX]: Uploaded file does not adhere with standard Olink format.")
