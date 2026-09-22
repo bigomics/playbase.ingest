@@ -15,19 +15,14 @@ LazyData: true
 Depends:
     R (>= 3.5)
 Imports:
-    bit64,
-    data.table,
-    Matrix,
-    methods,
-    stats,
-    tools,
-    utils
-Suggests:
     AnnotationDbi,
     ArrayExpress,
-    arrow,
     Biobase,
+    bit64,
+    data.table,
     GEOquery,
+    Matrix,
+    methods,
     msa,
     MultiAssayExperiment,
     OlinkAnalyze,
@@ -36,7 +31,12 @@ Suggests:
     recount,
     rhdf5,
     Seurat,
+    stats,
     SummarizedExperiment,
+    tools,
+    utils
+Suggests:
+    arrow,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Config/roxygen2/version: 8.1.0

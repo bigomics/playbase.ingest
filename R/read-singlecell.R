@@ -80,9 +80,6 @@ pgx.read_singlecell_counts <- function(filename) {
 #' @return Count gene expression data matrix (sparse dgCMatrix)
 #' @export
 read_cellranger_output <- function(file) {
-  if (!requireNamespace("Seurat", quietly = TRUE)) {
-    stop("read_cellranger_output() requires the 'Seurat' package (Suggests); install it to read 10X Cell Ranger output.")
-  }
   msg <- function(...) message("[playbase.ingest::read_cellranger_output] ", ...)
 
   msg("Reading 10X Cell Ranger output...")
