@@ -27,13 +27,11 @@ annotation, clustering, statistics.
    defines a function with the same name as one exported here. When you move
    a function from playbase to this package, delete it from playbase in the
    same change.
-5. **Keep Imports light:** `bit64`, `data.table`, `Matrix`, `methods`,
-   `stats`, `tools`, `utils`. Platform and download packages go in
-   **Suggests** (OlinkAnalyze, rhdf5, Seurat, GEOquery, recount, ...):
-   - call them as `pkg::fn()`;
-   - guard entry points with `requireNamespace()` and a clear `stop()` (see
-     `read_Olink_NPX()`);
-   - in tests, use `skip_if_not_installed()`.
+5. **Every package an exported function calls goes in Imports.** Call it as
+   `pkg::fn()`. playbase installs this package with its Imports only, so a
+   package that is only in Suggests is missing at runtime and the feature
+   breaks. Suggests is for test-only packages (`testthat`, `arrow`), which
+   tests guard with `skip_if_not_installed()`.
 6. **Epigenomics (IDAT) ingestion is left out on purpose for now.** It lives
    in `playbase.epigenetics`.
 
@@ -73,8 +71,7 @@ File names follow the function family: `read-*`, `check*`, `validate`,
    sample metadata. Prefix messages with `[playbase.ingest::read_<format>]`.
 2. **Roxygen:** a title, `@param` for every argument, `@return` and
    `@export`. `R CMD check` warns about any mismatch.
-3. **Dependencies:** optional packages go in Suggests with a
-   `requireNamespace()` guard.
+3. **Dependencies:** add any new package to Imports in `DESCRIPTION`.
 4. **Fixture:**
    - small, shareable files go in `inst/extdata/` and are reached with
      `example_file()`;
