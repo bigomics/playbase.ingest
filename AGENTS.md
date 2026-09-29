@@ -46,6 +46,7 @@ File names follow the function family: `read-*`, `check*`, `validate`,
 | `R/read.R` | `read_counts`, `read_samples`, `read_contrasts`, `read_annot`, `read_files`, `first_feature` | it reads one of the standard upload tables |
 | `R/read-table.R` | `read.as_matrix`, `detect_delim`, `detect_decimal`, `fread.csv` | it's low-level delimited-file parsing (separators, decimals, headers) |
 | `R/read-olink.R`, `R/read-spectronaut.R`, `R/read-h5.R`, `R/read-singlecell.R` | one platform or file format each | it reads a vendor or platform export. **New platform → new `R/read-<platform>.R`** |
+| `R/read-multiomics.R` | `read_multiomics_counts` | it merges per-layer counts into one prefixed (`gx:`/`px:`/`mx:`) matrix |
 | `R/read-gmt.R` | `read.gmt` | it reads gene-set files |
 | `R/check.R` | `pgx.checkINPUT` | it's a check on a single table |
 | `R/check-cross.R` | `pgx.crosscheckINPUT`, `contrasts_conversion_check` | it's a check across samples, counts and contrasts |
