@@ -19,4 +19,8 @@ test_that("read_multiomics_counts rejects bad input", {
   expect_error(read_multiomics_counts(list(m, m), c("RNA-seq", "microarray")), "only once")
   expect_error(read_multiomics_counts(list(m, m), c("RNA-seq", "lipidomics")), "unsupported")
   expect_error(read_multiomics_counts(list(m, n), c("RNA-seq", "proteomics")), "share no sample")
+  expect_error(
+    suppressMessages(read_multiomics_counts(list(m, 42), c("RNA-seq", "proteomics"))),
+    "could not read the proteomics layer"
+  )
 })

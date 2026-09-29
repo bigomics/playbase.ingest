@@ -32,6 +32,10 @@ read_multiomics_counts <- function(counts, datatypes) {
   if (anyDuplicated(prefix)) stop(tag, " each data type can be used only once")
 
   mats <- lapply(counts, read_counts)
+  unreadable <- vapply(mats, is.null, logical(1))
+  if (any(unreadable)) {
+    stop(tag, " could not read the ", paste(datatypes[unreadable], collapse = ", "), " layer")
+  }
   all_samples <- unique(unlist(lapply(mats, colnames)))
   shared <- Reduce(intersect, lapply(mats, colnames))
   if (length(shared) == 0) stop(tag, " the layers share no sample")
