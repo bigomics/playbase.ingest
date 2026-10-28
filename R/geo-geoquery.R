@@ -48,11 +48,11 @@ pgx.getGEOcounts.GEOquery <- function(accession) {
         hh1 <- grepl("symbol", colnames(features), ignore.case = TRUE)
         hh2 <- grepl("Ensembl", colnames(features), ignore.case = TRUE)
         ff <- NULL
-        if (any(hh1)) ff <- features[, hh1]
-        if (!any(hh1) && any(hh2)) ff <- features[, hh2]
+        if (any(hh1)) ff <- features[, which(hh1)[1]]
+        if (!any(hh1) && any(hh2)) ff <- features[, which(hh2)[1]]
         if (!is.null(ff)) {
           jj <- which(is.na(ff) | ff == "")
-          if (length(jj) > 0) ff[jj, hh] <- rownames(features)[jj]
+          if (length(jj) > 0) ff[jj] <- rownames(features)[jj]
           rownames(counts) <- as.character(ff)
         }
         rm(ff, features)
@@ -75,21 +75,18 @@ pgx.getGEOcounts.GEOquery <- function(accession) {
     supp_file <- sapply(gse, function(g) g@experimentData@other$supplementary_file)
     supp_file <- unname(supp_file[[1]])
     if (!is.null(supp_file)) {
-      hh <- grep("\n", supp_file)
-      if (length(hh) > 0) sfiles <- strsplit(supp_file, "\n")[[1]]
-      csvfile <- which(lapply(sfiles, function(x) grep(".csv", x)) > 0)
-      tarfile <- which(lapply(sfiles, function(x) grep(".tar", x)) > 0) ## TO DO....
-      if (any(csvfile)) {
-        file.ext <- tools::file_ext(sfiles[csvfile])
+      sfiles <- strsplit(supp_file, "\n")[[1]]
+      csvfile <- head(grep(".csv", sfiles, fixed = TRUE), 1)
+      if (length(csvfile)) {
         ext <- ".csv"
         if (tools::file_ext(sfiles[csvfile]) == "gz") ext <- ".csv.gz"
         destfile <- tempfile(fileext = ext)
-        dd <- try(download.file(url = sfiles[csvfile], destfile = destfile), silent = TRUE)
+        dd <- try(utils::download.file(url = sfiles[csvfile], destfile = destfile), silent = TRUE)
         if (inherits(dd, "try-error")) {
           message("[pgx.getGEOcounts.GEOquery] 1st attempt in downloading supp file failed. Trying again.\n")
-          dd <- try(download.file(url = sfiles[csvfile], destfile = destfile), silent = TRUE)
+          dd <- try(utils::download.file(url = sfiles[csvfile], destfile = destfile), silent = TRUE)
           if (inherits(dd, "try-error")) {
-            message("[pgx.getGEOcounts.GEOquery] Error in downloading supp file: ", url, ". Exiting \n")
+            message("[pgx.getGEOcounts.GEOquery] Error in downloading supp file: ", sfiles[csvfile], ". Exiting \n")
             return(NULL)
           }
         }

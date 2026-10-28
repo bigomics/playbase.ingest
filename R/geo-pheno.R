@@ -8,7 +8,7 @@
 #' field is returned as a vector.
 #' @export
 eset.getPhenoData <- function(eset, field) {
-  pData(phenoData(eset))[, field]
+  Biobase::pData(Biobase::phenoData(eset))[, field]
 }
 
 #' Parse phenotype columns from sample titles
@@ -102,7 +102,7 @@ eset.parsePhenoFromTitle <- function(title, split = NULL) {
   F1[is.na(F1)] <- NA
   lapply(apply(F1, 2, table), sort, decreasing = TRUE)
 
-  AA <- setdiff(unique(GENETIC_CODE), "*")
+  AA <- setdiff(unique(Biostrings::GENETIC_CODE), "*")
 
   i <- 1
   G <- list()

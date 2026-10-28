@@ -106,3 +106,12 @@ test_that("trimsame0 preserves input length and never errors on ragged input", {
     expect_length(playbase.ingest::trimsame.ends(input), length(input))
   }
 })
+
+test_that("eset.getPhenoData works without Biobase attached", {
+  pheno <- data.frame(group = c("a", "b"), row.names = c("s1", "s2"))
+  eset <- Biobase::ExpressionSet(
+    matrix(1:4, 2, dimnames = list(c("g1", "g2"), c("s1", "s2"))),
+    phenoData = Biobase::AnnotatedDataFrame(pheno)
+  )
+  expect_equal(playbase.ingest::eset.getPhenoData(eset, "group"), c("a", "b"))
+})

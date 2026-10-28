@@ -95,6 +95,8 @@ read_cellranger_output <- function(file) {
     msg(".zip compressed file detected...")
     utils::unzip(file, exdir = tmp)
     dir <- tmp
+  } else {
+    stop("[read_cellranger_output] expected a .tar.gz, .gz or .zip file: ", file)
   }
 
   ff1 <- c("barcodes.tsv.gz", "features.tsv.gz", "matrix.mtx.gz")

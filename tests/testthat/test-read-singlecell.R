@@ -33,3 +33,10 @@ test_that("seurat2pgx extracts counts and meta from a Seurat v5 object", {
   expect_equal(dim(pgx$counts), c(20, 10))
   expect_equal(rownames(pgx$samples), colnames(m))
 })
+
+test_that("read_cellranger_output rejects unsupported file types", {
+  expect_error(
+    suppressMessages(playbase.ingest::read_cellranger_output("counts.csv")),
+    "expected a .tar.gz, .gz or .zip file"
+  )
+})
