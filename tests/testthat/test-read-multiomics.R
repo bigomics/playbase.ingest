@@ -12,12 +12,18 @@ test_that("read_multiomics_counts prefixes layers and keeps shared samples", {
   expect_equal(mo$dropped_samples, "s3")
 })
 
+test_that("read_multiomics_counts prefixes a lipidomics layer lx", {
+  m <- matrix(1:4, 2, 2, dimnames = list(c("A", "B"), c("s1", "s2")))
+  mo <- read_multiomics_counts(list(m, m), c("metabolomics", "Lipidomics"))
+  expect_equal(rownames(mo$counts), c("mx:A", "mx:B", "lx:A", "lx:B"))
+})
+
 test_that("read_multiomics_counts rejects bad input", {
   m <- matrix(1:4, 2, 2, dimnames = list(c("A", "B"), c("s1", "s2")))
   n <- matrix(1:4, 2, 2, dimnames = list(c("A", "B"), c("x1", "x2")))
   expect_error(read_multiomics_counts(list(m), "RNA-seq"), "two layers")
   expect_error(read_multiomics_counts(list(m, m), c("RNA-seq", "microarray")), "only once")
-  expect_error(read_multiomics_counts(list(m, m), c("RNA-seq", "lipidomics")), "unsupported")
+  expect_error(read_multiomics_counts(list(m, m), c("RNA-seq", "methylomics")), "unsupported")
   expect_error(read_multiomics_counts(list(m, n), c("RNA-seq", "proteomics")), "share no sample")
   expect_error(
     suppressMessages(read_multiomics_counts(list(m, 42), c("RNA-seq", "proteomics"))),

@@ -3,11 +3,11 @@
 #' @param counts List of counts, one per omics layer. Each element is a file
 #'   path or a matrix, as accepted by \code{read_counts()}.
 #' @param datatypes Character vector, one data type per element of
-#'   \code{counts}: "RNA-seq" (or microarray / transcriptomics), "proteomics"
-#'   or "metabolomics".
+#'   \code{counts}: "RNA-seq" (or microarray / transcriptomics), "proteomics",
+#'   "metabolomics" or "lipidomics".
 #'
 #' @details Each layer's feature names get the layer prefix (\code{gx:},
-#' \code{px:}, \code{mx:}) that downstream preprocessing uses to infer layers.
+#' \code{px:}, \code{mx:}, \code{lx:}) that downstream preprocessing uses to infer layers.
 #' Only samples present in every layer are kept.
 #'
 #' @return \code{list(counts = , dropped_samples = )}: the stacked numeric
@@ -57,6 +57,7 @@ multiomics_prefix <- function(datatype) {
   dt <- tolower(datatype)
   if (grepl("proteomics", dt)) return("px")
   if (grepl("metabolomics", dt)) return("mx")
+  if (grepl("lipidomics", dt)) return("lx")
   if (grepl("rna|microarray|micro.array|transcriptomics", dt)) return("gx")
   stop("[playbase.ingest::read_multiomics_counts] unsupported data type: ", datatype)
 }

@@ -11,8 +11,8 @@ read_multiomics_counts(counts, datatypes)
 path or a matrix, as accepted by \code{read_counts()}.}
 
 \item{datatypes}{Character vector, one data type per element of
-\code{counts}: "RNA-seq" (or microarray / transcriptomics), "proteomics"
-or "metabolomics".}
+\code{counts}: "RNA-seq" (or microarray / transcriptomics), "proteomics",
+"metabolomics" or "lipidomics".}
 }
 \value{
 \code{list(counts = , dropped_samples = )}: the stacked numeric
@@ -24,7 +24,7 @@ Read and merge per-layer counts into one multi-omics matrix
 }
 \details{
 Each layer's feature names get the layer prefix (\code{gx:},
-\code{px:}, \code{mx:}) that downstream preprocessing uses to infer layers.
+\code{px:}, \code{mx:}, \code{lx:}) that downstream preprocessing uses to infer layers.
 Only samples present in every layer are kept.
 }
 \examples{
